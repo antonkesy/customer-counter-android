@@ -35,15 +35,12 @@
     </style>
 
     <style name="amountCounter">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">@dimen/bottom_margin</item>
-        <item name="android:includeFontPadding">false</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">150sp</item>
+        <item name="android:includeFontPadding">true</item>
         <item name="android:orientation">vertical</item>
         <item name="android:lines">1</item>
         <item name="android:text">@string/_0of0</item>
-
-        <item name="android:textSize">120sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
