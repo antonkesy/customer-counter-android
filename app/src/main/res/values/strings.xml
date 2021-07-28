@@ -6,4 +6,6 @@
     <string name="_0">0</string>
     <string name="maximum">MAXIMUM</string>
     <string name="free_spots">FREE SPOTS</string>
+    <string name="addCustomer">add customer</string>
+    <string name="subCustomer">subtract customer</string>
 </resources>
