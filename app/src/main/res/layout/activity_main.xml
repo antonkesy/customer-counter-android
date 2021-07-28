@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center|top"
         android:orientation="vertical"
@@ -19,56 +19,56 @@
 
         <LinearLayout
             android:id="@+id/countLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
+                android:id="@+id/customerIcon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/ic_baseline_person_24_green"
                 android:contentDescription="@string/amount_of_customer" />
 
             <TextView
-                android:id="@+id/amountTV"
-                style="@style/amountCounter"
-                android:textColor="@color/green" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/stopLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
+                android:id="@+id/stopTV"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:lines="1"
                 android:text="@string/stop"
                 android:textColor="@color/red"
                 android:textSize="90sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
-                android:id="@+id/limit_reached"
+                android:id="@+id/amountTV"
+                style="@style/amountCounter"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/green"
+                app:autoSizeMaxTextSize="250sp"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/limitReachedTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="2"
+                android:lines="1"
                 android:text="@string/limit_reached"
                 android:textColor="@color/red"
-                android:textSize="40sp" />
+                android:textSize="40sp"
+                android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/amountLimitTV"
-                style="@style/amountCounter"
-                android:textColor="@color/red" />
         </LinearLayout>
+
     </LinearLayout>
 
 
@@ -81,6 +81,7 @@
         app:layout_constraintStart_toEndOf="@id/subLayout">
 
         <ImageButton
+            android:id="@+id/addBtn"
             style="@style/BigButton"
             android:contentDescription="@string/addCustomer"
             app:srcCompat="@drawable/ic_baseline_add_24_black" />
@@ -95,6 +96,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
+            android:id="@+id/subBtn"
             style="@style/BigButton"
             android:contentDescription="@string/subCustomer"
             app:srcCompat="@drawable/ic_baseline_remove_24_black" />
