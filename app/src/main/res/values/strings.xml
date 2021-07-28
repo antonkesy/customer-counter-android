@@ -22,4 +22,5 @@
     <string name="vibrate_title">Vibrate</string>
     <string name="max_amount_title">Max amount of customer</string>
     <string name="sound_title">Sounds</string>
+    <string name="_0">0</string>
 </resources>
