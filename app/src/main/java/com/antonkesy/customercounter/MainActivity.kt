@@ -17,8 +17,8 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private var amountOfCustomers: Int = 100
-    private var maxAmount: Int = 20000
+    private var amountOfCustomers: Int = 0
+    private var maxAmount: Int = 10
     private lateinit var amountTV: TextView
 
     //switch when full
@@ -82,7 +82,8 @@ class MainActivity : AppCompatActivity() {
         stopTV = findViewById(R.id.stopTV)
         limitTV = findViewById(R.id.limitReachedTV)
 
-
+        updateFromPreferences()
+        changeCustomerAmount(0)
     }
 
 
@@ -121,5 +122,20 @@ class MainActivity : AppCompatActivity() {
         limitTV.visibility = if (isFull) View.VISIBLE else View.GONE
         //set value in textView
         amountTV.text = (amountOfCustomers.toString() + "\\" + maxAmount.toString())
+    }
+
+    override fun onPause() {
+        UserPreferencesManager.setCustomerAmount(this, amountOfCustomers)
+        super.onPause()
+    }
+
+    override fun onResume() {
+        updateFromPreferences()
+        super.onResume()
+    }
+
+    private fun updateFromPreferences() {
+        maxAmount = UserPreferencesManager.getMaxCustomer(this)
+        amountOfCustomers = UserPreferencesManager.getCustomerAmount(this)
     }
 }
