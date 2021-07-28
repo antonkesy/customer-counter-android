@@ -8,11 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="green">#4CAF50</color>
-    <color name="red">#CC0E0E</color>
-
-    <color name="background_good">#0B7A0F</color>
-    <color name="background_warning">#E8D000</color>
-    <color name="background_bad">#D80000</color>
-
+    <color name="green">#2dc937</color>
+    <color name="yellow">#e7b416</color>
+    <color name="red">#D80000</color>
 </resources>
