@@ -3,7 +3,7 @@
     <string name="amount_of_customer">amount of customer</string>
     <string name="stop">STOP</string>
     <string name="limit_reached">limit reached!</string>
-    <string name="_0">0</string>
+    <string name="_0of0">0/0</string>
     <string name="maximum">MAXIMUM</string>
     <string name="free_spots">FREE SPOTS</string>
     <string name="addCustomer">add customer</string>
