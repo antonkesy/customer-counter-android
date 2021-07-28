@@ -17,8 +17,8 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private var amountOfCustomers: Long = 100
-    private var maxAmount: Long = 20000
+    private var amountOfCustomers: Int = 100
+    private var maxAmount: Int = 20000
     private lateinit var amountTV: TextView
 
     //switch when full
@@ -83,11 +83,10 @@ class MainActivity : AppCompatActivity() {
         limitTV = findViewById(R.id.limitReachedTV)
 
 
-
     }
 
 
-    private fun changeCustomerAmount(value: Long) {
+    private fun changeCustomerAmount(value: Int) {
         val newAmount = amountOfCustomers + value
         //check if new amount is legal
         if (newAmount <= (maxAmount) && newAmount >= 0) {
