@@ -91,7 +91,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="visible"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="150dp"
@@ -173,15 +174,9 @@
 
 
     <ImageButton
-        android:id="@+id/statsBtn"
-        style="@style/SmallButton"
-        app:layout_constraintBottom_toBottomOf="@id/backgroundPlaceholder"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_equalizer_24" />
-
-    <ImageButton
         android:id="@+id/settingsBtn"
         style="@style/SmallButton"
+        android:contentDescription="@string/settings"
         app:layout_constraintBottom_toBottomOf="@id/backgroundPlaceholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_settings_24" />
