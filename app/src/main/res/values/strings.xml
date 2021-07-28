@@ -8,4 +8,5 @@
     <string name="free_spots">FREE SPOTS</string>
     <string name="addCustomer">add customer</string>
     <string name="subCustomer">subtract customer</string>
+    <string name="settings">Settings</string>
 </resources>
