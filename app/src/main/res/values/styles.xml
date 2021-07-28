@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BigButton">
+        <item name="android:textColor">#00FF00</item>
+        <item name="android:padding">50dp</item>
+        <item name="android:layout_width">@dimen/big_button_size</item>
+        <item name="android:layout_height">@dimen/big_button_size</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="BigButtonLayout">
+        <item name="android:layout_marginBottom">@dimen/bottom_margin</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/big_button_padding</item>
+    </style>
+
+    <style name="SmallButton">
+        <item name="android:padding">15dp</item>
+        <item name="android:layout_width">@dimen/small_button_size</item>
+        <item name="android:layout_height">@dimen/small_button_size</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+
+</resources>
