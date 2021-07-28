@@ -9,4 +9,17 @@
     <string name="addCustomer">add customer</string>
     <string name="subCustomer">subtract customer</string>
     <string name="settings">Settings</string>
+    <string name="maxCustomer">Maxmimum customer</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference -->
+    <string name="customer_counter_header">Customer Counter</string>
+    <!-- Sync Preferences -->
+    <string name="sound_buttons_summary_on">Press volume buttons to count up or down
+    </string>
+    <string name="sound_buttons_summary_off">Volume buttons change value of counter</string>
+    <string name="sound_buttons_title">Volume buttons change value</string>
+    <string name="vibrate_title">Vibrate</string>
+    <string name="max_amount_title">Max amount of customer</string>
+    <string name="sound_title">Sounds</string>
 </resources>
