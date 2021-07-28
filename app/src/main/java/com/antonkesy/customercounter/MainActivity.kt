@@ -93,15 +93,21 @@ class MainActivity : AppCompatActivity() {
         if (newAmount <= (maxAmount) && newAmount >= 0) {
             amountOfCustomers = newAmount
         }
-        //get new color
+        //get new color + trick programming also change customer icon!
         val newColor = when {
             amountOfCustomers >= maxAmount -> {
                 R.color.red
             }
             amountOfCustomers >= maxAmount * .9 -> {
+                //side effect!
+                customerIcon.background =
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_yellow)
                 R.color.yellow
             }
             else -> {
+                //side effect!
+                customerIcon.background =
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_green)
                 R.color.green
             }
         }
