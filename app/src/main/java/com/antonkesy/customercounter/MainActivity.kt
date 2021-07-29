@@ -1,6 +1,7 @@
 package com.antonkesy.customercounter
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        updateUIColor()
 
         //settings button
         findViewById<ImageButton>(R.id.settingsBtn).setOnClickListener {
@@ -137,11 +140,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         updateFromPreferences()
+        updateUIColor()
         super.onResume()
     }
 
     private fun updateFromPreferences() {
         maxAmount = UserPreferencesManager.getMaxCustomer(this)
         amountOfCustomers = UserPreferencesManager.getCustomerAmount(this)
+    }
+
+    private fun updateUIColor() {
+        findViewById<ImageButton>(R.id.settingsBtn).setImageDrawable(
+            when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24_white)
+                }
+                else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24_black)
+            }
+        )
     }
 }
