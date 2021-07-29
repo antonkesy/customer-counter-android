@@ -1,9 +1,12 @@
 package com.antonkesy.customercounter
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -31,14 +34,20 @@ class MainActivity : AppCompatActivity() {
     private var isLongPressAdd = false
     private var isLongPressSub = false
 
+    //settings flags
+    private var isSoundOn = true
+    private var isVibrateOn = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        val view = findViewById<View>(android.R.id.content).rootView
+        val audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         updateUIColor()
 
         //settings button
         findViewById<ImageButton>(R.id.settingsBtn).setOnClickListener {
+            checkSoundPlayClick(audioManager)
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
@@ -46,6 +55,8 @@ class MainActivity : AppCompatActivity() {
         val addBtn = findViewById<ImageButton>(R.id.addBtn)
         addBtn.setOnClickListener {
             if (!isLongPressAdd) {
+                checkSoundPlayClick(audioManager)
+                checkVibrateClick(view)
                 changeCustomerAmount(1)
             }
             isLongPressAdd = false
@@ -54,6 +65,8 @@ class MainActivity : AppCompatActivity() {
             isLongPressAdd = true
             GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
                 while (isLongPressAdd) {
+                    checkSoundPlayClick(audioManager)
+                    checkVibrateClick(view)
                     changeCustomerAmount(1)
                     delay(150)
                 }
@@ -65,6 +78,8 @@ class MainActivity : AppCompatActivity() {
         val subBtn = findViewById<ImageButton>(R.id.subBtn)
         subBtn.setOnClickListener {
             if (!isLongPressSub) {
+                checkSoundPlayClick(audioManager)
+                checkVibrateClick(view)
                 changeCustomerAmount(-1)
             }
             isLongPressSub = false
@@ -73,6 +88,8 @@ class MainActivity : AppCompatActivity() {
             isLongPressSub = true
             GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
                 while (isLongPressSub) {
+                    checkSoundPlayClick(audioManager)
+                    checkVibrateClick(view)
                     changeCustomerAmount(-1)
                     delay(150)
                 }
@@ -158,5 +175,21 @@ class MainActivity : AppCompatActivity() {
                 else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24_black)
             }
         )
+    }
+
+    private fun checkVibrateClick(view: View) {
+        if (isVibrateOn) {
+            view.performHapticFeedback(
+                HapticFeedbackConstants.VIRTUAL_KEY,
+                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+            )
+        }
+    }
+
+    private fun checkSoundPlayClick(audioManager: AudioManager) {
+        if (isSoundOn) {
+            //todo fix sound not playing
+            audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK)
+        }
     }
 }
