@@ -17,6 +17,11 @@
             app:title="@string/max_amount_title"
             app:useSimpleSummaryProvider="true" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:key="prefDarkModeKey"
+            app:title="@string/darkMode_title" />
+
         <!-- todo
          <SwitchPreferenceCompat
              app:key="prefSoundKey"

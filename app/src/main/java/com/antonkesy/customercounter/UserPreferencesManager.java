@@ -10,6 +10,7 @@ public class UserPreferencesManager {
     private static final String prefVibrateOn = "prefVibrateKey";
     private static final String prefSoundOn = "prefSoundKey";
     private static final String prefVolumeControlOn = "prefVolumeControlOnKey";
+    private static final String prefDarkMode = "prefDarkModeKey";
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -69,6 +70,10 @@ public class UserPreferencesManager {
 
     public static boolean isVolumeControlOn(Context context) {
         return getSharedPreferences(context).getBoolean(prefVolumeControlOn, false);
+    }
+
+    public static boolean isDarkMode(Context context) {
+        return getSharedPreferences(context).getBoolean(prefDarkMode, false);
     }
 
 }

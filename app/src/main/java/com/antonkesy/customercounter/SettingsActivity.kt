@@ -2,9 +2,15 @@ package com.antonkesy.customercounter
 
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -20,26 +26,58 @@ class SettingsActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+}
 
-    class SettingsFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey)
-            //set number edit pref to only number dial
-            setNumberInputPref(preferenceManager.findPreference("prefCustomerKey")!!)
-            setNumberInputPref(preferenceManager.findPreference("prefMaxKey")!!)
 
-        }
-
-        /**
-         * changes EditTextPreference input to number only
-         */
-        private fun setNumberInputPref(editTextPreference: EditTextPreference) {
-            editTextPreference.setOnBindEditTextListener { editText ->
-                editText.inputType =
-                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
-            }
-        }
+class SettingsFragment : PreferenceFragmentCompat() {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        //set number edit pref to only number dial
+        setNumberInputPref(preferenceManager.findPreference("prefCustomerKey")!!)
+        setNumberInputPref(preferenceManager.findPreference("prefMaxKey")!!)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
+        val myView = super.onCreateView(inflater, container, savedInstanceState)
+
+        updateBackgroundColor(
+            myView,
+            UserPreferencesManager.isDarkMode(requireContext())
+        )
+
+        val darkModeSwitch: SwitchPreferenceCompat? = findPreference("prefDarkModeKey")
+        darkModeSwitch?.setOnPreferenceChangeListener { _, newValue ->
+            updateBackgroundColor(view, newValue as Boolean)
+            true
+        }
+
+        return myView
+    }
+
+    private fun updateBackgroundColor(view: View?, darkMode: Boolean) {
+        Log.e("s", "d" + darkMode + " " + view)
+        view?.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(), if (darkMode)
+                    R.color.grey
+                else
+                    R.color.white
+            )
+        )
+    }
+
+    /**
+     * changes EditTextPreference input to number only
+     */
+    private fun setNumberInputPref(editTextPreference: EditTextPreference) {
+        editTextPreference.setOnBindEditTextListener { editText ->
+            editText.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
+        }
+    }
 }

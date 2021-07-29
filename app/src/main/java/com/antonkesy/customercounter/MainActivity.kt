@@ -2,7 +2,6 @@ package com.antonkesy.customercounter
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +12,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private var isSoundOn = true
     private var isVibrateOn = true
     private var isVolumeButtonControlOn = false
+    private var isDarkMode = false
 
     //for volume button control
     private var view: View? = null
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         view = findViewById<View>(android.R.id.content).rootView
         audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        updateFromPreferences()
         updateUIColor()
 
         //settings button
@@ -130,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         stopTV = findViewById(R.id.stopTV)
         limitTV = findViewById(R.id.limitReachedTV)
 
-        updateFromPreferences()
+
         changeCustomerAmount(0)
     }
 
@@ -196,36 +198,43 @@ class MainActivity : AppCompatActivity() {
         isSoundOn = UserPreferencesManager.isSoundOn(this)
         isVibrateOn = UserPreferencesManager.isVibrateOn(this)
         isVolumeButtonControlOn = UserPreferencesManager.isVolumeControlOn(this)
+        isDarkMode = UserPreferencesManager.isDarkMode(this)
     }
 
     private fun updateUIColor() {
         //change settings button color for low api with drawable change
         findViewById<ImageButton>(R.id.settingsBtn).setImageDrawable(
-            when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24_white)
-                }
-                else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24_black)
-            }
+            ContextCompat.getDrawable(
+                this,
+                if (isDarkMode)
+                    R.drawable.ic_baseline_settings_24_white
+                else R.drawable.ic_baseline_settings_24_black
+            )
         )
         //change sub button color for low api with drawable change
         findViewById<ImageButton>(R.id.subBtn).setImageDrawable(
-            when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_remove_24_white)
-                }
-                else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_remove_24_black)
-            }
+            ContextCompat.getDrawable(
+                this, if (isDarkMode)
+                    R.drawable.ic_baseline_remove_24_white
+                else R.drawable.ic_baseline_remove_24_black
+            )
         )
-
         //change sub button color for low api with drawable change
         findViewById<ImageButton>(R.id.addBtn).setImageDrawable(
-            when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_add_24_white)
-                }
-                else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_add_24_black)
-            }
+            ContextCompat.getDrawable(
+                this,
+                if (isDarkMode)
+                    R.drawable.ic_baseline_add_24_white
+                else R.drawable.ic_baseline_add_24_black
+            )
+        )
+        //update background color
+        findViewById<ConstraintLayout>(R.id.mainLayout).setBackgroundColor(
+            ContextCompat.getColor(
+                this, if (isDarkMode)
+                    R.color.black
+                else R.color.white
+            )
         )
     }
 

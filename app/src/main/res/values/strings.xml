@@ -24,4 +24,5 @@
     <string name="sound_title">Sounds</string>
     <string name="_0">0</string>
     <string name="amount_title">Amount of current customer</string>
+    <string name="darkMode_title">Dark mode</string>
 </resources>
