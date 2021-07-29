@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     private fun changeCustomerAmount(value: Int) {
         val newAmount = amountOfCustomers + value
         //check if new amount is legal
-        if (newAmount <= (maxAmount) && newAmount >= 0) {
+        if (newAmount >= 0) {
             amountOfCustomers = newAmount
         }
         //get new color + trick programming also change customer icon!
@@ -158,6 +158,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         updateFromPreferences()
         updateUIColor()
+        changeCustomerAmount(0)
         super.onResume()
     }
 
