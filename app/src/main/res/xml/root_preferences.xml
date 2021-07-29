@@ -5,18 +5,25 @@
         <EditTextPreference
             android:digits="0123456789"
             android:inputType="number"
-            app:key="max"
+            app:key="customerKey"
+            app:title="@string/amount_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:digits="0123456789"
+            android:inputType="number"
+            app:key="maxKey"
             app:title="@string/max_amount_title"
             app:useSimpleSummaryProvider="true" />
 
         <!-- todo
          <SwitchPreferenceCompat
-             app:key="sound"
+             app:key="soundKey"
              app:title="@string/sound_title" />
           -->
 
         <SwitchPreferenceCompat
-            app:key="vibrate"
+            app:key="vibrateKey"
             app:title="@string/vibrate_title" />
 
         <SwitchPreferenceCompat
