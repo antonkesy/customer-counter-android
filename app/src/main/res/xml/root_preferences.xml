@@ -10,6 +10,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
+            android:defaultValue="10"
             android:digits="0123456789"
             android:inputType="numberDecimal"
             app:key="maxKey"
