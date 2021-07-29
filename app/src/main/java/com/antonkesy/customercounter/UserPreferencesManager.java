@@ -5,10 +5,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 public class UserPreferencesManager {
-    private static final String prefMaxCustomer = "maxKey";
-    private static final String prefCustomerAmount = "customerKey";
-    private static final String prefVibrateOn = "vibrateKey";
-    private static final String prefSoundOn = "soundKey";
+    private static final String prefMaxCustomer = "prefMaxKey";
+    private static final String prefCustomerAmount = "prefCustomerKey";
+    private static final String prefVibrateOn = "prefVibrateKey";
+    private static final String prefSoundOn = "prefSoundKey";
+    private static final String prefVolumeControlOn = "prefVolumeControlOnKey";
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -64,6 +65,10 @@ public class UserPreferencesManager {
 
     public static boolean isVibrateOn(Context context) {
         return getSharedPreferences(context).getBoolean(prefVibrateOn, true);
+    }
+
+    public static boolean isVolumeControlOn(Context context) {
+        return getSharedPreferences(context).getBoolean(prefVolumeControlOn, false);
     }
 
 }

@@ -5,7 +5,7 @@
         <EditTextPreference
             android:digits="0123456789"
             android:inputType="numberDecimal"
-            app:key="customerKey"
+            app:key="prefCustomerKey"
             app:title="@string/amount_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -13,22 +13,22 @@
             android:defaultValue="10"
             android:digits="0123456789"
             android:inputType="numberDecimal"
-            app:key="maxKey"
+            app:key="prefMaxKey"
             app:title="@string/max_amount_title"
             app:useSimpleSummaryProvider="true" />
 
         <!-- todo
          <SwitchPreferenceCompat
-             app:key="soundKey"
+             app:key="prefSoundKey"
              app:title="@string/sound_title" />
           -->
 
         <SwitchPreferenceCompat
-            app:key="vibrateKey"
+            app:key="prefVibrateKey"
             app:title="@string/vibrate_title" />
 
         <SwitchPreferenceCompat
-            app:key="soundbtn"
+            app:key="prefVolumeControlOnKey"
             app:summaryOff="@string/sound_buttons_summary_off"
             app:summaryOn="@string/sound_buttons_summary_on"
             app:title="@string/sound_buttons_title" />

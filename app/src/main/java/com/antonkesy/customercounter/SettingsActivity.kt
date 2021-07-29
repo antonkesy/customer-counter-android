@@ -25,8 +25,8 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             //set number edit pref to only number dial
-            setNumberInputPref(preferenceManager.findPreference("customerKey")!!)
-            setNumberInputPref(preferenceManager.findPreference("maxKey")!!)
+            setNumberInputPref(preferenceManager.findPreference("prefCustomerKey")!!)
+            setNumberInputPref(preferenceManager.findPreference("prefMaxKey")!!)
 
         }
 
