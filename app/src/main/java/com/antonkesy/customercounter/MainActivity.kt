@@ -164,6 +164,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateFromPreferences() {
         maxAmount = UserPreferencesManager.getMaxCustomer(this)
         amountOfCustomers = UserPreferencesManager.getCustomerAmount(this)
+        isSoundOn = UserPreferencesManager.isSoundOn(this)
+        isVibrateOn = UserPreferencesManager.isVibrateOn(this)
     }
 
     private fun updateUIColor() {
