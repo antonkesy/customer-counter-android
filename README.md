@@ -13,6 +13,6 @@ It's not pretty or good but who cares :)
 
 # screenshots
 
-![screenshot](shop\graphics\screenshots\phone\Screenshot_0.PNG)
-![screenshot](shop\graphics\screenshots\phone\Screenshot_1.PNG)
-![screenshot](shop\graphics\screenshots\phone\Screenshot_2.PNG)
+![screenshot](shop/graphics/screenshots/phone/Screenshot_0.png)
+![screenshot](shop/graphics/screenshots/phone/Screenshot_1.png)
+![screenshot](shop/graphics/screenshots/phone/Screenshot_2.png)
