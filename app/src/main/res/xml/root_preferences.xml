@@ -24,6 +24,7 @@
           -->
 
         <SwitchPreferenceCompat
+            android:defaultValue="true"
             app:key="prefVibrateKey"
             app:title="@string/vibrate_title" />
 
