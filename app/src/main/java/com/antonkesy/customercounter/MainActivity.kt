@@ -177,12 +177,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUIColor() {
+        //change settings button color for low api with drawable change
         findViewById<ImageButton>(R.id.settingsBtn).setImageDrawable(
             when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
                 Configuration.UI_MODE_NIGHT_YES -> {
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24_white)
                 }
                 else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24_black)
+            }
+        )
+        //change sub button color for low api with drawable change
+        findViewById<ImageButton>(R.id.subBtn).setImageDrawable(
+            when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_remove_24_white)
+                }
+                else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_remove_24_black)
+            }
+        )
+
+        //change sub button color for low api with drawable change
+        findViewById<ImageButton>(R.id.addBtn).setImageDrawable(
+            when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_add_24_white)
+                }
+                else -> ContextCompat.getDrawable(this, R.drawable.ic_baseline_add_24_black)
             }
         )
     }
