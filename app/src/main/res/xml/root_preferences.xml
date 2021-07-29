@@ -4,14 +4,14 @@
 
         <EditTextPreference
             android:digits="0123456789"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             app:key="customerKey"
             app:title="@string/amount_title"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             android:digits="0123456789"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             app:key="maxKey"
             app:title="@string/max_amount_title"
             app:useSimpleSummaryProvider="true" />
