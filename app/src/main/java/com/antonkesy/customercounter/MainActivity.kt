@@ -40,16 +40,20 @@ class MainActivity : AppCompatActivity() {
     private var isVibrateOn = true
     private var isVolumeButtonControlOn = false
 
+    //for volume button control
+    private var view: View? = null
+    private var audioManager: AudioManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val view = findViewById<View>(android.R.id.content).rootView
-        val audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        view = findViewById<View>(android.R.id.content).rootView
+        audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         updateUIColor()
 
         //settings button
         findViewById<ImageButton>(R.id.settingsBtn).setOnClickListener {
-            checkSoundPlayClick(audioManager)
+            checkSoundPlayClick()
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
@@ -57,8 +61,8 @@ class MainActivity : AppCompatActivity() {
         val addBtn = findViewById<ImageButton>(R.id.addBtn)
         addBtn.setOnClickListener {
             if (!isLongPressAdd) {
-                checkSoundPlayClick(audioManager)
-                checkVibrateClick(view)
+                checkSoundPlayClick()
+                checkVibrateClick()
                 changeCustomerAmount(1)
             }
             isLongPressAdd = false
@@ -67,8 +71,8 @@ class MainActivity : AppCompatActivity() {
             isLongPressAdd = true
             GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
                 while (isLongPressAdd) {
-                    checkSoundPlayClick(audioManager)
-                    checkVibrateClick(view)
+                    checkSoundPlayClick()
+                    checkVibrateClick()
                     changeCustomerAmount(1)
                     delay(150)
                 }
@@ -80,8 +84,8 @@ class MainActivity : AppCompatActivity() {
         val subBtn = findViewById<ImageButton>(R.id.subBtn)
         subBtn.setOnClickListener {
             if (!isLongPressSub) {
-                checkSoundPlayClick(audioManager)
-                checkVibrateClick(view)
+                checkSoundPlayClick()
+                checkVibrateClick()
                 changeCustomerAmount(-1)
             }
             isLongPressSub = false
@@ -90,8 +94,8 @@ class MainActivity : AppCompatActivity() {
             isLongPressSub = true
             GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
                 while (isLongPressSub) {
-                    checkSoundPlayClick(audioManager)
-                    checkVibrateClick(view)
+                    checkSoundPlayClick()
+                    checkVibrateClick()
                     changeCustomerAmount(-1)
                     delay(150)
                 }
@@ -183,27 +187,31 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun checkVibrateClick(view: View) {
+    private fun checkVibrateClick() {
         if (isVibrateOn) {
-            view.performHapticFeedback(
+            view?.performHapticFeedback(
                 HapticFeedbackConstants.VIRTUAL_KEY,
                 HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
             )
         }
     }
 
-    private fun checkSoundPlayClick(audioManager: AudioManager) {
+    private fun checkSoundPlayClick() {
         if (isSoundOn) {
             //todo fix sound not playing
-            audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK)
+            audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK)
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (isVolumeButtonControlOn) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                checkVibrateClick()
+                checkSoundPlayClick()
                 changeCustomerAmount(-1)
             } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                checkVibrateClick()
+                checkSoundPlayClick()
                 changeCustomerAmount(1)
             }
             return true
