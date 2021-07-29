@@ -70,11 +70,22 @@ class MainActivity : AppCompatActivity() {
         addBtn.setOnLongClickListener {
             isLongPressAdd = true
             GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
+                var iteration = 0
+                var delayTime = 150L
+                //decrease delay time depending on how long button is clicked
                 while (isLongPressAdd) {
+                    if (iteration <= 15) {
+                        ++iteration
+                        delayTime = when (iteration) {
+                            5 -> 100
+                            15 -> 50
+                            else -> delayTime
+                        }
+                    }
                     checkSoundPlayClick()
                     checkVibrateClick()
                     changeCustomerAmount(1)
-                    delay(150)
+                    delay(delayTime)
                 }
             }
             false
@@ -93,11 +104,22 @@ class MainActivity : AppCompatActivity() {
         subBtn.setOnLongClickListener {
             isLongPressSub = true
             GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
+                var iteration = 0
+                var delayTime = 150L
+                //decrease delay time depending on how long button is clicked
                 while (isLongPressSub) {
+                    if (iteration <= 15) {
+                        ++iteration
+                        delayTime = when (iteration) {
+                            5 -> 100
+                            15 -> 50
+                            else -> delayTime
+                        }
+                    }
                     checkSoundPlayClick()
                     checkVibrateClick()
                     changeCustomerAmount(-1)
-                    delay(150)
+                    delay(delayTime)
                 }
             }
             false
