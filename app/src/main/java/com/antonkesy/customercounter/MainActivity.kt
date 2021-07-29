@@ -7,6 +7,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
+import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     //settings flags
     private var isSoundOn = true
     private var isVibrateOn = true
+    private var isVolumeButtonControlOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,6 +169,7 @@ class MainActivity : AppCompatActivity() {
         amountOfCustomers = UserPreferencesManager.getCustomerAmount(this)
         isSoundOn = UserPreferencesManager.isSoundOn(this)
         isVibrateOn = UserPreferencesManager.isVibrateOn(this)
+        isVolumeButtonControlOn = UserPreferencesManager.isVolumeControlOn(this)
     }
 
     private fun updateUIColor() {
@@ -194,5 +197,17 @@ class MainActivity : AppCompatActivity() {
             //todo fix sound not playing
             audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK)
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (isVolumeButtonControlOn) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                changeCustomerAmount(-1)
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                changeCustomerAmount(1)
+            }
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
