@@ -2,7 +2,6 @@ package com.antonkesy.customercounter
 
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +59,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun updateBackgroundColor(view: View?, darkMode: Boolean) {
-        Log.e("s", "d" + darkMode + " " + view)
         view?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(), if (darkMode)
