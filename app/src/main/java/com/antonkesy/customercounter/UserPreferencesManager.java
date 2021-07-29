@@ -23,11 +23,7 @@ public class UserPreferencesManager {
     public static int getMaxCustomer(Context context) {
         return getSharedPreferences(context).getInt(prefMaxCustomer, 10);
     }
-
-    public static void setMaxCustomer(Context context, int value) {
-        setInt(context, prefMaxCustomer, value);
-    }
-
+    
     public static int getCustomerAmount(Context context) {
         return getSharedPreferences(context).getInt(prefCustomerAmount, 0);
     }
