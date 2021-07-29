@@ -9,9 +9,11 @@
             app:title="@string/max_amount_title"
             app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreferenceCompat
-            app:key="sound"
-            app:title="@string/sound_title" />
+        <!-- todo
+         <SwitchPreferenceCompat
+             app:key="sound"
+             app:title="@string/sound_title" />
+          -->
 
         <SwitchPreferenceCompat
             app:key="vibrate"
