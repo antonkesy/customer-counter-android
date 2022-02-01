@@ -1,4 +1,4 @@
-package com.antonkesy.customercounter;
+package com.antonkesy.customercounter.application.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;

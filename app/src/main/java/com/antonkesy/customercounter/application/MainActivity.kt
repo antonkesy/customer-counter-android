@@ -1,4 +1,4 @@
-package com.antonkesy.customercounter
+package com.antonkesy.customercounter.application
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.antonkesy.customercounter.R
+import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

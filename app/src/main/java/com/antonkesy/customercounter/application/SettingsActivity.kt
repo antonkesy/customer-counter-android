@@ -1,4 +1,4 @@
-package com.antonkesy.customercounter
+package com.antonkesy.customercounter.application
 
 import android.os.Bundle
 import android.text.InputType
@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.antonkesy.customercounter.R
+import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 
 
 class SettingsActivity : AppCompatActivity() {
