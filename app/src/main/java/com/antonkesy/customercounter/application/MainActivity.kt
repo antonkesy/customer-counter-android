@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -41,12 +42,6 @@ class MainActivity : AppCompatActivity() {
     private var isLongPressAdd = false
     private var isLongPressSub = false
 
-    //settings flags
-    private var isSoundOn = true
-    private var isVibrateOn = true
-    private var isVolumeButtonControlOn = false
-    private var isDarkMode = false
-
     //for volume button control
     private var view: View? = null
     private var audioManager: AudioManager? = null
@@ -59,50 +54,24 @@ class MainActivity : AppCompatActivity() {
         settings = UserPreferencesManager(this)
         counter =
             Counter(settings.getCustomerAmount(), settings.getMaxCustomer(), this::updateCounterUI)
-        updateFromPreferences()
+
         updateUIColor()
 
-        //settings button
-        findViewById<ImageButton>(R.id.settingsBtn).setOnClickListener {
-            playClickSound()
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
+        setupSettingsButton()
+        setupAddButton()
+        setupSubButton()
 
-        //add button
-        val addBtn = findViewById<ImageButton>(R.id.addBtn)
-        addBtn.setOnClickListener {
-            if (!isLongPressAdd) {
-                playClickSound()
-                vibrateClick()
-                counter.increment()
-            }
-            isLongPressAdd = false
-        }
-        addBtn.setOnLongClickListener {
-            isLongPressAdd = true
-            GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
-                var iteration = 0
-                var delayTime = 150L
-                //decrease delay time depending on how long button is clicked
-                while (isLongPressAdd) {
-                    if (iteration <= 15) {
-                        ++iteration
-                        delayTime = when (iteration) {
-                            5 -> 100
-                            15 -> 50
-                            else -> delayTime
-                        }
-                    }
-                    playClickSound()
-                    vibrateClick()
-                    counter.increment()
-                    delay(delayTime)
-                }
-            }
-            false
-        }
+        setViewElements()
+    }
 
-        //sub button
+    private fun setViewElements() {
+        amountTV = findViewById(R.id.amountTV)
+        customerIcon = findViewById(R.id.customerIcon)
+        stopTV = findViewById(R.id.stopTV)
+        limitTV = findViewById(R.id.limitReachedTV)
+    }
+
+    private fun setupSubButton() {
         val subBtn = findViewById<ImageButton>(R.id.subBtn)
         subBtn.setOnClickListener {
             if (!isLongPressSub) {
@@ -135,16 +104,51 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+    }
 
-        amountTV = findViewById(R.id.amountTV)
-        customerIcon = findViewById(R.id.customerIcon)
-        stopTV = findViewById(R.id.stopTV)
-        limitTV = findViewById(R.id.limitReachedTV)
+    private fun setupAddButton() {
+        val addBtn = findViewById<ImageButton>(R.id.addBtn)
+        addBtn.setOnClickListener {
+            if (!isLongPressAdd) {
+                playClickSound()
+                vibrateClick()
+                counter.increment()
+            }
+            isLongPressAdd = false
+        }
+        addBtn.setOnLongClickListener {
+            isLongPressAdd = true
+            GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
+                var iteration = 0
+                var delayTime = 150L
+                //decrease delay time depending on how long button is clicked
+                while (isLongPressAdd) {
+                    if (iteration <= 15) {
+                        ++iteration
+                        delayTime = when (iteration) {
+                            5 -> 100
+                            15 -> 50
+                            else -> delayTime
+                        }
+                    }
+                    playClickSound()
+                    vibrateClick()
+                    counter.increment()
+                    delay(delayTime)
+                }
+            }
+            false
+        }
+    }
 
+    private fun setupSettingsButton() {
+        findViewById<ImageButton>(R.id.settingsBtn).setOnClickListener {
+            playClickSound()
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 
     override fun onResume() {
-        updateFromPreferences()
         updateUIColor()
         updateCounterUI()
         counter.setMax(settings.getMaxCustomer())
@@ -156,52 +160,42 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    private fun updateFromPreferences() {
-        isSoundOn = settings.isSoundActive()
-        isVibrateOn = settings.isVibrationActive()
-        isVolumeButtonControlOn = settings.isVolumeControlButton()
-        isDarkMode = settings.isDarkMode()
-    }
-
     private fun updateUIColor() {
         //change settings button color for low api with drawable change
-        findViewById<ImageButton>(R.id.settingsBtn).setImageDrawable(
-            ContextCompat.getDrawable(
-                this,
-                if (isDarkMode)
-                    R.drawable.ic_baseline_settings_24_white
-                else R.drawable.ic_baseline_settings_24_black
-            )
+        updateImageButtonDrawable(
+            findViewById(R.id.settingsBtn), if (settings.isDarkMode())
+                R.drawable.ic_baseline_settings_24_white
+            else R.drawable.ic_baseline_settings_24_black
+        )
+
+        updateImageButtonDrawable(
+            findViewById(R.id.subBtn), if (settings.isDarkMode())
+                R.drawable.ic_baseline_remove_24_white
+            else R.drawable.ic_baseline_remove_24_black
         )
         //change sub button color for low api with drawable change
-        findViewById<ImageButton>(R.id.subBtn).setImageDrawable(
-            ContextCompat.getDrawable(
-                this, if (isDarkMode)
-                    R.drawable.ic_baseline_remove_24_white
-                else R.drawable.ic_baseline_remove_24_black
-            )
+        updateImageButtonDrawable(
+            findViewById(R.id.addBtn), if (settings.isDarkMode())
+                R.drawable.ic_baseline_add_24_white
+            else R.drawable.ic_baseline_add_24_black
         )
-        //change sub button color for low api with drawable change
-        findViewById<ImageButton>(R.id.addBtn).setImageDrawable(
-            ContextCompat.getDrawable(
-                this,
-                if (isDarkMode)
-                    R.drawable.ic_baseline_add_24_white
-                else R.drawable.ic_baseline_add_24_black
-            )
-        )
+
         //update background color
         findViewById<ConstraintLayout>(R.id.mainLayout).setBackgroundColor(
             ContextCompat.getColor(
-                this, if (isDarkMode)
+                this, if (settings.isDarkMode())
                     R.color.black
                 else R.color.white
             )
         )
     }
 
+    private fun updateImageButtonDrawable(imgBtn: ImageButton, @DrawableRes drawable: Int) {
+        imgBtn.setImageDrawable(ContextCompat.getDrawable(this, drawable))
+    }
+
     private fun vibrateClick() {
-        if (isVibrateOn) {
+        if (settings.isVibrationActive()) {
             view?.performHapticFeedback(
                 HapticFeedbackConstants.VIRTUAL_KEY,
                 HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
@@ -210,13 +204,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun playClickSound() {
-        if (isSoundOn) {
+        if (settings.isSoundActive()) {
             audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK)
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (isVolumeButtonControlOn) {
+        if (settings.isVolumeControlButton()) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                 vibrateClick()
                 playClickSound()
