@@ -6,9 +6,8 @@ import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 
-import com.antonkesy.customercounter.counter.ICounterSettings;
+public class UserPreferencesManager implements ICustomerCounterSettings {
 
-public class UserPreferencesManager implements IApplicationSettings, ICounterSettings {
     private static final String PREF_MAX_KEY = "prefMaxKey";
     private static final String PREF_CUSTOMER_KEY = "prefCustomerKey";
     private static final String PREF_VIBRATE_KEY = "prefVibrateKey";

@@ -25,8 +25,8 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var settings: IApplicationSettings
     private lateinit var counterSettings: ICounterSettings
+    private lateinit var settings: ICustomerCounterSettings
 
     private var amountOfCustomers: Int = 0
     private var maxAmount: Int = 10
