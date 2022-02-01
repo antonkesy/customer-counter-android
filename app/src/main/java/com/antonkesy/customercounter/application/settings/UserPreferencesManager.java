@@ -47,12 +47,12 @@ public class UserPreferencesManager implements ICustomerCounterSettings {
 
     @Override
     public void putVibrationActive(boolean isActive) {
-
+        getEditorSharedPreferences(context).putBoolean(PREF_VIBRATE_KEY, isActive).apply();
     }
 
     @Override
     public void putSoundActive(boolean isActive) {
-
+        getEditorSharedPreferences(context).putBoolean(PREF_SOUND_KEY, isActive).apply();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class UserPreferencesManager implements ICustomerCounterSettings {
 
     @Override
     public void putVolumeControlButton(boolean isButton) {
-
+        getEditorSharedPreferences(context).putBoolean(PREF_VOLUME_CONTROL_ON_KEY, isButton).apply();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class UserPreferencesManager implements ICustomerCounterSettings {
 
     @Override
     public void putDarkMode(boolean isDarkMode) {
-
+        getEditorSharedPreferences(context).putBoolean(PREF_DARK_MODE_KEY, isDarkMode).apply();
     }
 
     @Override
