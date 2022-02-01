@@ -57,13 +57,14 @@ class MainActivity : AppCompatActivity() {
         view = findViewById<View>(android.R.id.content).rootView
         audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         settings = UserPreferencesManager(this)
-        counter = Counter(settings.getCustomerAmount(), settings.getMaxCustomer(),  this::updateCounterUI)
+        counter =
+            Counter(settings.getCustomerAmount(), settings.getMaxCustomer(), this::updateCounterUI)
         updateFromPreferences()
         updateUIColor()
 
         //settings button
         findViewById<ImageButton>(R.id.settingsBtn).setOnClickListener {
-            checkSoundPlayClick()
+            playClickSound()
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
@@ -71,8 +72,8 @@ class MainActivity : AppCompatActivity() {
         val addBtn = findViewById<ImageButton>(R.id.addBtn)
         addBtn.setOnClickListener {
             if (!isLongPressAdd) {
-                checkSoundPlayClick()
-                checkVibrateClick()
+                playClickSound()
+                vibrateClick()
                 counter.increment()
             }
             isLongPressAdd = false
@@ -92,8 +93,8 @@ class MainActivity : AppCompatActivity() {
                             else -> delayTime
                         }
                     }
-                    checkSoundPlayClick()
-                    checkVibrateClick()
+                    playClickSound()
+                    vibrateClick()
                     counter.increment()
                     delay(delayTime)
                 }
@@ -105,8 +106,8 @@ class MainActivity : AppCompatActivity() {
         val subBtn = findViewById<ImageButton>(R.id.subBtn)
         subBtn.setOnClickListener {
             if (!isLongPressSub) {
-                checkSoundPlayClick()
-                checkVibrateClick()
+                playClickSound()
+                vibrateClick()
                 counter.decrement()
             }
             isLongPressSub = false
@@ -126,8 +127,8 @@ class MainActivity : AppCompatActivity() {
                             else -> delayTime
                         }
                     }
-                    checkSoundPlayClick()
-                    checkVibrateClick()
+                    playClickSound()
+                    vibrateClick()
                     counter.decrement()
                     delay(delayTime)
                 }
@@ -199,7 +200,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun checkVibrateClick() {
+    private fun vibrateClick() {
         if (isVibrateOn) {
             view?.performHapticFeedback(
                 HapticFeedbackConstants.VIRTUAL_KEY,
@@ -208,9 +209,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkSoundPlayClick() {
+    private fun playClickSound() {
         if (isSoundOn) {
-            //todo fix sound not playing
             audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK)
         }
     }
@@ -218,12 +218,12 @@ class MainActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (isVolumeButtonControlOn) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                checkVibrateClick()
-                checkSoundPlayClick()
+                vibrateClick()
+                playClickSound()
                 counter.decrement()
             } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                checkVibrateClick()
-                checkSoundPlayClick()
+                vibrateClick()
+                playClickSound()
                 counter.increment()
             }
             return true
