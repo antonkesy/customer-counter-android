@@ -98,7 +98,7 @@ public class UserPreferencesManager implements ICustomerCounterSettings {
     }
 
     @Override
-    public void setCustomerAmount(int amountOfCustomers) {
+    public void putCustomerAmount(int amountOfCustomers) {
         setIntAsString(context, PREF_CUSTOMER_KEY, amountOfCustomers);
     }
 

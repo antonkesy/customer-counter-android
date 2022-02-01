@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        settings.setCustomerAmount(counter.getCurrentAmount())
+        settings.putCustomerAmount(counter.getCurrentAmount())
         super.onPause()
     }
 
