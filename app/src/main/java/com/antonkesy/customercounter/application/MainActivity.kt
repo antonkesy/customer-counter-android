@@ -15,9 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.antonkesy.customercounter.R
-import com.antonkesy.customercounter.application.settings.IApplicationSettings
+import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
-import com.antonkesy.customercounter.counter.ICounterSettings
+import com.antonkesy.customercounter.counter.Counter
+import com.antonkesy.customercounter.counter.ICounter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -25,11 +26,10 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var counterSettings: ICounterSettings
-    private lateinit var settings: ICustomerCounterSettings
 
-    private var amountOfCustomers: Int = 0
-    private var maxAmount: Int = 10
+    private lateinit var settings: ICustomerCounterSettings
+    private lateinit var counter: ICounter
+
     private lateinit var amountTV: TextView
 
     //switch when full
@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         view = findViewById<View>(android.R.id.content).rootView
         audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         settings = UserPreferencesManager(this)
+        counter = Counter(settings.getCustomerAmount(), settings.getMaxCustomer(),  this::updateCounterUI)
         updateFromPreferences()
         updateUIColor()
 
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             if (!isLongPressAdd) {
                 checkSoundPlayClick()
                 checkVibrateClick()
-                changeCustomerAmount(1)
+                counter.increment()
             }
             isLongPressAdd = false
         }
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     checkSoundPlayClick()
                     checkVibrateClick()
-                    changeCustomerAmount(1)
+                    counter.increment()
                     delay(delayTime)
                 }
             }
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity() {
             if (!isLongPressSub) {
                 checkSoundPlayClick()
                 checkVibrateClick()
-                changeCustomerAmount(-1)
+                counter.decrement()
             }
             isLongPressSub = false
         }
@@ -127,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     checkSoundPlayClick()
                     checkVibrateClick()
-                    changeCustomerAmount(-1)
+                    counter.decrement()
                     delay(delayTime)
                 }
             }
@@ -139,69 +140,22 @@ class MainActivity : AppCompatActivity() {
         stopTV = findViewById(R.id.stopTV)
         limitTV = findViewById(R.id.limitReachedTV)
 
-
-        changeCustomerAmount(0)
-    }
-
-
-    private fun changeCustomerAmount(value: Int) {
-        val newAmount = amountOfCustomers + value
-        //check if new amount is legal
-        if (newAmount >= 0) {
-            amountOfCustomers = newAmount
-        }
-        //get new color + trick programming also change customer icon!
-        val newColor = when {
-            amountOfCustomers >= maxAmount -> {
-                R.color.red
-            }
-            amountOfCustomers >= maxAmount * .9 -> {
-                //side effect!
-                customerIcon.background =
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_yellow)
-                R.color.yellow
-            }
-            else -> {
-                //side effect!
-                customerIcon.background =
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_green)
-                R.color.green
-            }
-        }
-        //set text color
-        amountTV.setTextColor(
-            ContextCompat.getColor(
-                this, newColor
-            )
-        )
-        //set statusBar color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = ContextCompat.getColor(this, newColor)
-        }
-        //set ui warnings
-        val isFull = amountOfCustomers >= maxAmount
-        customerIcon.visibility = if (isFull) View.GONE else View.VISIBLE
-        stopTV.visibility = if (isFull) View.VISIBLE else View.GONE
-        limitTV.visibility = if (isFull) View.VISIBLE else View.GONE
-        //set value in textView
-        amountTV.text = (amountOfCustomers.toString() + "\\" + maxAmount.toString())
-    }
-
-    override fun onPause() {
-        counterSettings.setCustomerAmount( amountOfCustomers)
-        super.onPause()
     }
 
     override fun onResume() {
         updateFromPreferences()
         updateUIColor()
-        changeCustomerAmount(0)
+        updateCounterUI()
+        counter.setMax(settings.getMaxCustomer())
         super.onResume()
     }
 
+    override fun onPause() {
+        settings.setCustomerAmount(counter.getCurrentAmount())
+        super.onPause()
+    }
+
     private fun updateFromPreferences() {
-        maxAmount = counterSettings.getMaxCustomer()
-        amountOfCustomers = counterSettings.getCustomerAmount()
         isSoundOn = settings.isSoundActive()
         isVibrateOn = settings.isVibrationActive()
         isVolumeButtonControlOn = settings.isVolumeControlButton()
@@ -266,14 +220,53 @@ class MainActivity : AppCompatActivity() {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                 checkVibrateClick()
                 checkSoundPlayClick()
-                changeCustomerAmount(-1)
+                counter.decrement()
             } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
                 checkVibrateClick()
                 checkSoundPlayClick()
-                changeCustomerAmount(1)
+                counter.increment()
             }
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun updateCounterUI() {
+        //get new color + trick programming also change customer icon!
+        val newColor = when {
+            counter.getCurrentAmount() >= counter.getMax() -> {
+                R.color.red
+            }
+            counter.getCurrentAmount() >= counter.getMax() * .9 -> {
+                //side effect!
+                customerIcon.background =
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_yellow)
+                R.color.yellow
+            }
+            else -> {
+                //side effect!
+                customerIcon.background =
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_green)
+                R.color.green
+            }
+        }
+        //set text color
+        amountTV.setTextColor(
+            ContextCompat.getColor(
+                this, newColor
+            )
+        )
+        //set statusBar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = ContextCompat.getColor(this, newColor)
+        }
+        //set ui warnings
+        val isFull = counter.getCurrentAmount() >= counter.getMax()
+        customerIcon.visibility = if (isFull) View.GONE else View.VISIBLE
+        stopTV.visibility = if (isFull) View.VISIBLE else View.GONE
+        limitTV.visibility = if (isFull) View.VISIBLE else View.GONE
+        //set value in textView
+        amountTV.text = (counter.getCurrentAmount().toString() + "\\" + counter.getMax().toString())
+
     }
 }
