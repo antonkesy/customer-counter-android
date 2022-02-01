@@ -11,6 +11,12 @@ public class UserPreferencesManager {
     private static final String prefSoundOn = "prefSoundKey";
     private static final String prefVolumeControlOn = "prefVolumeControlOnKey";
     private static final String prefDarkMode = "prefDarkModeKey";
+    private static final String PREF_MAX_KEY = "prefMaxKey";
+    private static final String PREF_CUSTOMER_KEY = "prefCustomerKey";
+    private static final String PREF_VIBRATE_KEY = "prefVibrateKey";
+    private static final String PREF_SOUND_KEY = "prefSoundKey";
+    private static final String PREF_VOLUME_CONTROL_ON_KEY = "prefVolumeControlOnKey";
+    private static final String PREF_DARK_MODE_KEY = "prefDarkModeKey";
 
     private static SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -31,7 +37,7 @@ public class UserPreferencesManager {
      * @return
      */
     public static int getMaxCustomer(Context context) {
-        String prefValue = getSharedPreferences(context).getString(prefMaxCustomer, "10");
+        String prefValue = getSharedPreferences(context).getString(PREF_MAX_KEY, "10");
         int maxCustomerValue = 10;
         try {
             maxCustomerValue = Integer.parseInt(prefValue);
@@ -47,7 +53,7 @@ public class UserPreferencesManager {
      * @return
      */
     public static int getCustomerAmount(Context context) {
-        String prefValue = getSharedPreferences(context).getString(prefCustomerAmount, "0");
+        String prefValue = getSharedPreferences(context).getString(PREF_CUSTOMER_KEY, "0");
         int customerValue = 0;
         try {
             customerValue = Integer.parseInt(prefValue);
@@ -57,23 +63,23 @@ public class UserPreferencesManager {
     }
 
     public static void setCustomerAmount(Context context, int value) {
-        setIntAsString(context, prefCustomerAmount, value);
+        setIntAsString(context, PREF_CUSTOMER_KEY, value);
     }
 
     public static boolean isSoundOn(Context context) {
-        return getSharedPreferences(context).getBoolean(prefSoundOn, false);
+        return getSharedPreferences(context).getBoolean(PREF_SOUND_KEY, false);
     }
 
     public static boolean isVibrateOn(Context context) {
-        return getSharedPreferences(context).getBoolean(prefVibrateOn, true);
+        return getSharedPreferences(context).getBoolean(PREF_VIBRATE_KEY, true);
     }
 
     public static boolean isVolumeControlOn(Context context) {
-        return getSharedPreferences(context).getBoolean(prefVolumeControlOn, false);
+        return getSharedPreferences(context).getBoolean(PREF_VOLUME_CONTROL_ON_KEY, false);
     }
 
     public static boolean isDarkMode(Context context) {
-        return getSharedPreferences(context).getBoolean(prefDarkMode, false);
+        return getSharedPreferences(context).getBoolean(PREF_DARK_MODE_KEY, false);
     }
 
 }
