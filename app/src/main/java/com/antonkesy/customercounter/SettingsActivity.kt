@@ -40,7 +40,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val myView = super.onCreateView(inflater, container, savedInstanceState)
 
@@ -51,15 +51,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val darkModeSwitch: SwitchPreferenceCompat? = findPreference("prefDarkModeKey")
         darkModeSwitch?.setOnPreferenceChangeListener { _, newValue ->
-            updateBackgroundColor(view, newValue as Boolean)
+            updateBackgroundColor(myView, newValue as Boolean)
             true
         }
 
         return myView
     }
 
-    private fun updateBackgroundColor(view: View?, darkMode: Boolean) {
-        view?.setBackgroundColor(
+    private fun updateBackgroundColor(view: View, darkMode: Boolean) {
+        view.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(), if (darkMode)
                     R.color.grey
