@@ -2,7 +2,6 @@ package com.antonkesy.customercounter.application
 
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
@@ -16,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.antonkesy.customercounter.R
+import com.antonkesy.customercounter.application.audio.CustomerCounterAudioManager
+import com.antonkesy.customercounter.application.audio.ICustomerCounterAudioManager
 import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 import com.antonkesy.customercounter.application.view.ValueChangeButton
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var settings: ICustomerCounterSettings
     private lateinit var counter: ICounter
+    private lateinit var audioManager: ICustomerCounterAudioManager
 
     private lateinit var amountTV: TextView
 
@@ -37,14 +39,13 @@ class MainActivity : AppCompatActivity() {
 
     //for volume button control
     private var view: View? = null
-    private var audioManager: AudioManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         view = findViewById<View>(android.R.id.content).rootView
-        audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         settings = UserPreferencesManager(this)
+        audioManager = CustomerCounterAudioManager(this, settings.isSoundActive())
         counter =
             Counter(settings.getCustomerAmount(), settings.getMaxCustomer(), this::updateCounterUI)
 
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupSubButton() {
         ValueChangeButton(findViewById(R.id.addBtn)) {
-            playClickSound()
+            audioManager.playClickSound()
             vibrateClick()
             counter.decrement()
         }
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupAddButton() {
         ValueChangeButton(findViewById(R.id.addBtn)) {
-            playClickSound()
+            audioManager.playClickSound()
             vibrateClick()
             counter.increment()
         }
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupSettingsButton() {
         findViewById<ImageButton>(R.id.settingsBtn).setOnClickListener {
-            playClickSound()
+            audioManager.playClickSound()
             startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
@@ -142,21 +143,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun playClickSound() {
-        if (settings.isSoundActive()) {
-            audioManager?.playSoundEffect(AudioManager.FX_KEY_CLICK)
-        }
-    }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (settings.isVolumeControlButton()) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                 vibrateClick()
-                playClickSound()
+                audioManager.playClickSound()
                 counter.decrement()
             } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
                 vibrateClick()
-                playClickSound()
+                audioManager.playClickSound()
                 counter.increment()
             }
             return true
