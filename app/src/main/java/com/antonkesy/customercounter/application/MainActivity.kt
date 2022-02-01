@@ -18,12 +18,9 @@ import androidx.core.content.ContextCompat
 import com.antonkesy.customercounter.R
 import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
+import com.antonkesy.customercounter.application.view.ValueChangeButton
 import com.antonkesy.customercounter.counter.Counter
 import com.antonkesy.customercounter.counter.ICounter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,10 +34,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var customerIcon: ImageView
     private lateinit var stopTV: TextView
     private lateinit var limitTV: TextView
-
-    //long press flag
-    private var isLongPressAdd = false
-    private var isLongPressSub = false
 
     //for volume button control
     private var view: View? = null
@@ -72,72 +65,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSubButton() {
-        val subBtn = findViewById<ImageButton>(R.id.subBtn)
-        subBtn.setOnClickListener {
-            if (!isLongPressSub) {
-                playClickSound()
-                vibrateClick()
-                counter.decrement()
-            }
-            isLongPressSub = false
-        }
-        subBtn.setOnLongClickListener {
-            isLongPressSub = true
-            GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
-                var iteration = 0
-                var delayTime = 150L
-                //decrease delay time depending on how long button is clicked
-                while (isLongPressSub) {
-                    if (iteration <= 15) {
-                        ++iteration
-                        delayTime = when (iteration) {
-                            5 -> 100
-                            15 -> 50
-                            else -> delayTime
-                        }
-                    }
-                    playClickSound()
-                    vibrateClick()
-                    counter.decrement()
-                    delay(delayTime)
-                }
-            }
-            false
+        ValueChangeButton(findViewById(R.id.addBtn)) {
+            playClickSound()
+            vibrateClick()
+            counter.decrement()
         }
     }
 
     private fun setupAddButton() {
-        val addBtn = findViewById<ImageButton>(R.id.addBtn)
-        addBtn.setOnClickListener {
-            if (!isLongPressAdd) {
-                playClickSound()
-                vibrateClick()
-                counter.increment()
-            }
-            isLongPressAdd = false
-        }
-        addBtn.setOnLongClickListener {
-            isLongPressAdd = true
-            GlobalScope.launch(Dispatchers.Main) { // launch coroutine in the main thread
-                var iteration = 0
-                var delayTime = 150L
-                //decrease delay time depending on how long button is clicked
-                while (isLongPressAdd) {
-                    if (iteration <= 15) {
-                        ++iteration
-                        delayTime = when (iteration) {
-                            5 -> 100
-                            15 -> 50
-                            else -> delayTime
-                        }
-                    }
-                    playClickSound()
-                    vibrateClick()
-                    counter.increment()
-                    delay(delayTime)
-                }
-            }
-            false
+        ValueChangeButton(findViewById(R.id.addBtn)) {
+            playClickSound()
+            vibrateClick()
+            counter.increment()
         }
     }
 
