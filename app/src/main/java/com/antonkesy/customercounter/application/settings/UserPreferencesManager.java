@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class UserPreferencesManager {
-    private static final String prefMaxCustomer = "prefMaxKey";
-    private static final String prefCustomerAmount = "prefCustomerKey";
-    private static final String prefVibrateOn = "prefVibrateKey";
-    private static final String prefSoundOn = "prefSoundKey";
-    private static final String prefVolumeControlOn = "prefVolumeControlOnKey";
-    private static final String prefDarkMode = "prefDarkModeKey";
+import androidx.annotation.NonNull;
+
+import com.antonkesy.customercounter.counter.ICounterSettings;
+
+public class UserPreferencesManager implements IApplicationSettings, ICounterSettings {
     private static final String PREF_MAX_KEY = "prefMaxKey";
     private static final String PREF_CUSTOMER_KEY = "prefCustomerKey";
     private static final String PREF_VIBRATE_KEY = "prefVibrateKey";
@@ -18,25 +16,68 @@ public class UserPreferencesManager {
     private static final String PREF_VOLUME_CONTROL_ON_KEY = "prefVolumeControlOnKey";
     private static final String PREF_DARK_MODE_KEY = "prefDarkModeKey";
 
-    private static SharedPreferences getSharedPreferences(Context context) {
+    private final Context context;
+
+    public UserPreferencesManager(Context context) {
+        this.context = context;
+    }
+
+    private SharedPreferences getSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    private static SharedPreferences.Editor getEditorSharedPreferences(Context context) {
+    private SharedPreferences.Editor getEditorSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).edit();
     }
 
-    private static void setIntAsString(Context context, String key, int newValue) {
+    private void setIntAsString(Context context, String key, int newValue) {
         getEditorSharedPreferences(context).putString(key, Integer.toString(newValue)).apply();
     }
 
-    /**
-     * string to int because root_preferences saves as string not int key
-     *
-     * @param context
-     * @return
-     */
-    public static int getMaxCustomer(Context context) {
+
+    @Override
+    public boolean isSoundActive() {
+        return getSharedPreferences(context).getBoolean(PREF_SOUND_KEY, false);
+    }
+
+
+    @Override
+    public boolean isVibrationActive() {
+        return getSharedPreferences(context).getBoolean(PREF_VIBRATE_KEY, true);
+    }
+
+    @Override
+    public void putVibrationActive(boolean isActive) {
+
+    }
+
+    @Override
+    public void putSoundActive(boolean isActive) {
+
+    }
+
+    @Override
+    public boolean isVolumeControlButton() {
+        return getSharedPreferences(context).getBoolean(PREF_VOLUME_CONTROL_ON_KEY, false);
+    }
+
+    @Override
+    public void putVolumeControlButton(boolean isButton) {
+
+    }
+
+    @Override
+    public boolean isDarkMode() {
+        return getSharedPreferences(context).getBoolean(PREF_DARK_MODE_KEY, false);
+    }
+
+    @Override
+    public void putDarkMode(boolean isDarkMode) {
+
+    }
+
+    @Override
+    public int getMaxCustomer() {
         String prefValue = getSharedPreferences(context).getString(PREF_MAX_KEY, "10");
         int maxCustomerValue = 10;
         try {
@@ -46,13 +87,8 @@ public class UserPreferencesManager {
         return maxCustomerValue;
     }
 
-    /**
-     * string to int because root_preferences saves as string not int key
-     *
-     * @param context
-     * @return
-     */
-    public static int getCustomerAmount(Context context) {
+    @Override
+    public int getCustomerAmount() {
         String prefValue = getSharedPreferences(context).getString(PREF_CUSTOMER_KEY, "0");
         int customerValue = 0;
         try {
@@ -62,24 +98,26 @@ public class UserPreferencesManager {
         return customerValue;
     }
 
-    public static void setCustomerAmount(Context context, int value) {
-        setIntAsString(context, PREF_CUSTOMER_KEY, value);
+    @Override
+    public void setCustomerAmount(int amountOfCustomers) {
+        setIntAsString(context, PREF_CUSTOMER_KEY, amountOfCustomers);
     }
 
-    public static boolean isSoundOn(Context context) {
-        return getSharedPreferences(context).getBoolean(PREF_SOUND_KEY, false);
+    @NonNull
+    @Override
+    public String getDarkModeKey() {
+        return PREF_DARK_MODE_KEY;
     }
 
-    public static boolean isVibrateOn(Context context) {
-        return getSharedPreferences(context).getBoolean(PREF_VIBRATE_KEY, true);
+    @NonNull
+    @Override
+    public String getCustomerKey() {
+        return PREF_CUSTOMER_KEY;
     }
 
-    public static boolean isVolumeControlOn(Context context) {
-        return getSharedPreferences(context).getBoolean(PREF_VOLUME_CONTROL_ON_KEY, false);
+    @NonNull
+    @Override
+    public String getMaxCustomerKey() {
+        return PREF_MAX_KEY;
     }
-
-    public static boolean isDarkMode(Context context) {
-        return getSharedPreferences(context).getBoolean(PREF_DARK_MODE_KEY, false);
-    }
-
 }

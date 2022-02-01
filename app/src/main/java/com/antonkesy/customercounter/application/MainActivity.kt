@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.antonkesy.customercounter.R
+import com.antonkesy.customercounter.application.settings.IApplicationSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
+import com.antonkesy.customercounter.counter.ICounterSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -23,6 +25,8 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var settings: IApplicationSettings
+    private lateinit var counterSettings: ICounterSettings
 
     private var amountOfCustomers: Int = 0
     private var maxAmount: Int = 10
@@ -52,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         view = findViewById<View>(android.R.id.content).rootView
         audioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        settings = UserPreferencesManager(this)
         updateFromPreferences()
         updateUIColor()
 
@@ -183,7 +188,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        UserPreferencesManager.setCustomerAmount(this, amountOfCustomers)
+        counterSettings.setCustomerAmount( amountOfCustomers)
         super.onPause()
     }
 
@@ -195,12 +200,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateFromPreferences() {
-        maxAmount = UserPreferencesManager.getMaxCustomer(this)
-        amountOfCustomers = UserPreferencesManager.getCustomerAmount(this)
-        isSoundOn = UserPreferencesManager.isSoundOn(this)
-        isVibrateOn = UserPreferencesManager.isVibrateOn(this)
-        isVolumeButtonControlOn = UserPreferencesManager.isVolumeControlOn(this)
-        isDarkMode = UserPreferencesManager.isDarkMode(this)
+        maxAmount = counterSettings.getMaxCustomer()
+        amountOfCustomers = counterSettings.getCustomerAmount()
+        isSoundOn = settings.isSoundActive()
+        isVibrateOn = settings.isVibrationActive()
+        isVolumeButtonControlOn = settings.isVolumeControlButton()
+        isDarkMode = settings.isDarkMode()
     }
 
     private fun updateUIColor() {

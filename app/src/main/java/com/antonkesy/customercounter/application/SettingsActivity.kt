@@ -31,11 +31,13 @@ class SettingsActivity : AppCompatActivity() {
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         //set number edit pref to only number dial
-        setNumberInputPref(preferenceManager.findPreference("prefCustomerKey")!!)
-        setNumberInputPref(preferenceManager.findPreference("prefMaxKey")!!)
+        val userPreferencesManager = UserPreferencesManager(context);
+        setNumberInputPref(preferenceManager.findPreference(userPreferencesManager.getCustomerKey())!!)
+        setNumberInputPref(preferenceManager.findPreference(userPreferencesManager.getMaxCustomerKey())!!)
     }
 
     override fun onCreateView(
@@ -46,12 +48,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val myView = super.onCreateView(inflater, container, savedInstanceState)
 
-        updateBackgroundColor(
-            myView,
-            UserPreferencesManager.isDarkMode(requireContext())
-        )
+        val userPreferencesManager = UserPreferencesManager(context)
+        updateBackgroundColor(myView, userPreferencesManager.isDarkMode())
 
-        val darkModeSwitch: SwitchPreferenceCompat? = findPreference("prefDarkModeKey")
+        val darkModeSwitch: SwitchPreferenceCompat? =
+            findPreference(userPreferencesManager.getDarkModeKey())
         darkModeSwitch?.setOnPreferenceChangeListener { _, newValue ->
             updateBackgroundColor(myView, newValue as Boolean)
             true
