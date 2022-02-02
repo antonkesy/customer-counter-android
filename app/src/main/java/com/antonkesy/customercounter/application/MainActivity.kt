@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSubButton() {
-        ValueChangeButton(findViewById(R.id.addBtn)) {
+        ValueChangeButton(findViewById(R.id.subBtn)) {
             audioManager.playClickSound()
             vibrateClick()
             counter.decrement()
