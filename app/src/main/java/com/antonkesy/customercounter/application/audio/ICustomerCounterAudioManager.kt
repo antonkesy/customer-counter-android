@@ -1,6 +1,7 @@
 package com.antonkesy.customercounter.application.audio
 
-interface ICustomerCounterAudioManager {
+import com.antonkesy.customercounter.application.manager.IManager
+
+interface ICustomerCounterAudioManager : IManager {
     fun playClickSound()
-    fun setActive(isActive: Boolean)
 }
