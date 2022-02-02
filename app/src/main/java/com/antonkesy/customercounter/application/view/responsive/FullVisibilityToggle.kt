@@ -2,7 +2,7 @@ package com.antonkesy.customercounter.application.view.responsive
 
 import android.view.View
 
-class VisibilityToggle(
+open class FullVisibilityToggle(
     private val view: View,
     private val onFull: Int,
     private val onNotFull: Int

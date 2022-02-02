@@ -9,21 +9,23 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import com.antonkesy.customercounter.R
 import com.antonkesy.customercounter.application.audio.CustomerCounterAudioManager
 import com.antonkesy.customercounter.application.audio.ICustomerCounterAudioManager
 import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 import com.antonkesy.customercounter.application.view.ValueChangeButton
+import com.antonkesy.customercounter.application.view.responsive.DrawableColorChanger
+import com.antonkesy.customercounter.application.view.responsive.FullVisibilityToggle
+import com.antonkesy.customercounter.application.view.responsive.IDrawableColorChanger
 import com.antonkesy.customercounter.application.view.responsive.IVisibilityToggle
-import com.antonkesy.customercounter.application.view.responsive.VisibilityToggle
 import com.antonkesy.customercounter.counter.Counter
 import com.antonkesy.customercounter.counter.ICounter
 
@@ -37,7 +39,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var amountTV: TextView
 
     //switch when full
-    private lateinit var toggleItems: List<IVisibilityToggle>
+    private lateinit var visibilityItem: List<IVisibilityToggle>
+    private lateinit var colorItems: List<IDrawableColorChanger>
 
     //for volume button control
     private var view: View? = null
@@ -61,11 +64,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setViewElements() {
+        val personIconView = findViewById<ImageView>(R.id.customerIcon)
         amountTV = findViewById(R.id.amountTV)
-        toggleItems = listOf(
-            VisibilityToggle(findViewById(R.id.customerIcon), GONE, VISIBLE),
-            VisibilityToggle(findViewById(R.id.stopTV), VISIBLE, GONE),
-            VisibilityToggle(findViewById(R.id.limitReachedTV), VISIBLE, GONE),
+
+        colorItems = listOf(DrawableColorChanger(personIconView))
+        visibilityItem = listOf(
+            FullVisibilityToggle(personIconView, GONE, VISIBLE),
+            FullVisibilityToggle(findViewById(R.id.stopTV), VISIBLE, GONE),
+            FullVisibilityToggle(findViewById(R.id.limitReachedTV), VISIBLE, GONE),
         )
     }
 
@@ -175,12 +181,13 @@ class MainActivity : AppCompatActivity() {
         setPersonIconColor(newColor)
         updateCustomerAmountTextView(newColor)
         updateStatusBar(newColor)
-        updateToggleViews()
+        updateToggleViews(newColor)
     }
 
-    private fun updateToggleViews() {
+    private fun updateToggleViews(@ColorInt newColor: Int) {
         val isFull = counter.getCurrentAmount() >= counter.getMax()
-        toggleItems.forEach { t -> t.onStateChange(isFull) }
+        visibilityItem.forEach { t -> t.onStateChange(isFull) }
+        colorItems.forEach { t -> t.setDrawableColor(newColor) }
     }
 
     private fun updateStatusBar(newColor: Int) {
@@ -195,10 +202,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setPersonIconColor(newColor: Int) {
-        val unwrappedDrawable =
-            AppCompatResources.getDrawable(this, R.drawable.ic_baseline_person_24_green)
-        val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
-        DrawableCompat.setTint(wrappedDrawable, newColor)
+
+
     }
 
     private fun getCustomersStateColor() = ContextCompat.getColor(
