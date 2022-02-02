@@ -100,6 +100,11 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
+    override fun onDestroy() {
+        settings.putCustomerAmount(counter.getCurrentAmount())
+        super.onDestroy()
+    }
+
     override fun onPause() {
         settings.putCustomerAmount(counter.getCurrentAmount())
         super.onPause()
