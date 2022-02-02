@@ -3,6 +3,9 @@
     package="com.antonkesy.customercounter"
     xmlns:dist="http://schemas.android.com/apk/distribution">
 
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <dist:module dist:instant="true" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <application
