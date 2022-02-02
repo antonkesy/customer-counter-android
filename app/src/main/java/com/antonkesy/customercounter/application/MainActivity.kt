@@ -22,10 +22,12 @@ import com.antonkesy.customercounter.application.audio.ICustomerCounterAudioMana
 import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 import com.antonkesy.customercounter.application.view.ValueChangeButton
-import com.antonkesy.customercounter.application.view.responsive.DrawableColorChanger
 import com.antonkesy.customercounter.application.view.responsive.FullVisibilityToggle
-import com.antonkesy.customercounter.application.view.responsive.IDrawableColorChanger
+import com.antonkesy.customercounter.application.view.responsive.IColorChanger
 import com.antonkesy.customercounter.application.view.responsive.IVisibilityToggle
+import com.antonkesy.customercounter.application.view.responsive.wrapper.DrawableWrapper
+import com.antonkesy.customercounter.application.view.responsive.wrapper.StatusBarWrapper
+import com.antonkesy.customercounter.application.view.responsive.wrapper.TextViewWrapper
 import com.antonkesy.customercounter.counter.Counter
 import com.antonkesy.customercounter.counter.ICounter
 
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     //switch when full
     private lateinit var visibilityItem: List<IVisibilityToggle>
-    private lateinit var colorItems: List<IDrawableColorChanger>
+    private lateinit var colorItems: List<IColorChanger>
 
     //for volume button control
     private var view: View? = null
@@ -67,7 +69,11 @@ class MainActivity : AppCompatActivity() {
         val personIconView = findViewById<ImageView>(R.id.customerIcon)
         amountTV = findViewById(R.id.amountTV)
 
-        colorItems = listOf(DrawableColorChanger(personIconView))
+        colorItems = listOf(
+            DrawableWrapper(personIconView),
+            StatusBarWrapper(this.window),
+            TextViewWrapper(amountTV)
+        )
         visibilityItem = listOf(
             FullVisibilityToggle(personIconView, GONE, VISIBLE),
             FullVisibilityToggle(findViewById(R.id.stopTV), VISIBLE, GONE),
@@ -178,32 +184,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateCounterUI() {
         val newColor = getCustomersStateColor()
-        setPersonIconColor(newColor)
-        updateCustomerAmountTextView(newColor)
-        updateStatusBar(newColor)
+        updateCustomerAmountText()
         updateToggleViews(newColor)
     }
 
     private fun updateToggleViews(@ColorInt newColor: Int) {
         val isFull = counter.getCurrentAmount() >= counter.getMax()
         visibilityItem.forEach { t -> t.onStateChange(isFull) }
-        colorItems.forEach { t -> t.setDrawableColor(newColor) }
+        colorItems.forEach { t -> t.changeColor(newColor) }
     }
 
-    private fun updateStatusBar(newColor: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = newColor
-        }
-    }
-
-    private fun updateCustomerAmountTextView(newColor: Int) {
-        amountTV.setTextColor(newColor)
+    private fun updateCustomerAmountText() {
         amountTV.text = (counter.getCurrentAmount().toString() + "\\" + counter.getMax().toString())
-    }
-
-    private fun setPersonIconColor(newColor: Int) {
-
-
     }
 
     private fun getCustomersStateColor() = ContextCompat.getColor(
