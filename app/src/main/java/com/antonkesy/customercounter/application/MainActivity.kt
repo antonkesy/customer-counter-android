@@ -1,25 +1,29 @@
 package com.antonkesy.customercounter.application
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.antonkesy.customercounter.R
 import com.antonkesy.customercounter.application.audio.CustomerCounterAudioManager
 import com.antonkesy.customercounter.application.audio.ICustomerCounterAudioManager
 import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 import com.antonkesy.customercounter.application.view.ValueChangeButton
+import com.antonkesy.customercounter.application.view.responsive.IVisibilityToggle
+import com.antonkesy.customercounter.application.view.responsive.VisibilityToggle
 import com.antonkesy.customercounter.counter.Counter
 import com.antonkesy.customercounter.counter.ICounter
 
@@ -33,9 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var amountTV: TextView
 
     //switch when full
-    private lateinit var customerIcon: ImageView
-    private lateinit var stopTV: TextView
-    private lateinit var limitTV: TextView
+    private lateinit var toggleItems: List<IVisibilityToggle>
 
     //for volume button control
     private var view: View? = null
@@ -60,9 +62,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setViewElements() {
         amountTV = findViewById(R.id.amountTV)
-        customerIcon = findViewById(R.id.customerIcon)
-        stopTV = findViewById(R.id.stopTV)
-        limitTV = findViewById(R.id.limitReachedTV)
+        toggleItems = listOf(
+            VisibilityToggle(findViewById(R.id.customerIcon), GONE, VISIBLE),
+            VisibilityToggle(findViewById(R.id.stopTV), VISIBLE, GONE),
+            VisibilityToggle(findViewById(R.id.limitReachedTV), VISIBLE, GONE),
+        )
     }
 
     private fun setupSubButton() {
@@ -91,6 +95,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         updateUIColor()
         updateCounterUI()
+        audioManager.setActive(settings.isSoundActive())
         counter.setMax(settings.getMaxCustomer())
         super.onResume()
     }
@@ -161,41 +166,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateCounterUI() {
-        //get new color + trick programming also change customer icon!
-        val newColor = when {
-            counter.getCurrentAmount() >= counter.getMax() -> {
-                R.color.red
-            }
-            counter.getCurrentAmount() >= counter.getMax() * .9 -> {
-                //side effect!
-                customerIcon.background =
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_yellow)
-                R.color.yellow
-            }
-            else -> {
-                //side effect!
-                customerIcon.background =
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_person_24_green)
-                R.color.green
-            }
-        }
-        //set text color
-        amountTV.setTextColor(
-            ContextCompat.getColor(
-                this, newColor
-            )
-        )
-        //set statusBar color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = ContextCompat.getColor(this, newColor)
-        }
-        //set ui warnings
-        val isFull = counter.getCurrentAmount() >= counter.getMax()
-        customerIcon.visibility = if (isFull) View.GONE else View.VISIBLE
-        stopTV.visibility = if (isFull) View.VISIBLE else View.GONE
-        limitTV.visibility = if (isFull) View.VISIBLE else View.GONE
-        //set value in textView
-        amountTV.text = (counter.getCurrentAmount().toString() + "\\" + counter.getMax().toString())
-
+        val newColor = getCustomersStateColor()
+        setPersonIconColor(newColor)
+        updateCustomerAmountTextView(newColor)
+        updateStatusBar(newColor)
+        updateToggleViews()
     }
+
+    private fun updateToggleViews() {
+        val isFull = counter.getCurrentAmount() >= counter.getMax()
+        toggleItems.forEach { t -> t.onStateChange(isFull) }
+    }
+
+    private fun updateStatusBar(newColor: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = newColor
+        }
+    }
+
+    private fun updateCustomerAmountTextView(newColor: Int) {
+        amountTV.setTextColor(newColor)
+        amountTV.text = (counter.getCurrentAmount().toString() + "\\" + counter.getMax().toString())
+    }
+
+    private fun setPersonIconColor(newColor: Int) {
+        val unwrappedDrawable =
+            AppCompatResources.getDrawable(this, R.drawable.ic_baseline_person_24_green)
+        val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
+        DrawableCompat.setTint(wrappedDrawable, newColor)
+    }
+
+    private fun getCustomersStateColor() = ContextCompat.getColor(
+        this, when {
+            counter.getCurrentAmount() >= counter.getMax() -> R.color.red
+            counter.getCurrentAmount() >= counter.getMax() * .9 -> R.color.yellow
+            else -> R.color.green
+        }
+    )
 }
