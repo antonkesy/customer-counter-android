@@ -20,4 +20,5 @@
     <string name="max_amount_title">Max amount of customer</string>
     <string name="amount_title">Amount of current customer</string>
     <string name="darkMode_title">Dark mode</string>
+    <string name="donate">donate</string>
 </resources>
