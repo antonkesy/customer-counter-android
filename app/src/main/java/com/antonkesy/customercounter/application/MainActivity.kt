@@ -109,14 +109,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        updateCounter()
         updateUIColor()
+        updateManager()
         updateCounterUI()
+        super.onResume()
+    }
 
+    private fun updateManager() {
         audioManager.setActive(settings.isSoundActive())
         vibrationManager.setActive(settings.isVibrationActive())
+    }
 
+    private fun updateCounter() {
+        counter.setCurrent(settings.getCustomerAmount())
         counter.setMax(settings.getMaxCustomer())
-        super.onResume()
     }
 
     override fun onDestroy() {

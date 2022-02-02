@@ -34,4 +34,8 @@ class Counter(
         current = 0
         counterListener()
     }
+
+    override fun setCurrent(current: Int) {
+        this.current = current
+    }
 }

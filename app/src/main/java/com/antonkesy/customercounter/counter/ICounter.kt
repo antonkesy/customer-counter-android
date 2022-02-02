@@ -7,4 +7,5 @@ interface ICounter {
     fun increment()
     fun decrement()
     fun reset()
+    fun setCurrent(current: Int)
 }
