@@ -1,4 +1,4 @@
-package com.antonkesy.customercounter
+package com.antonkesy.customercounter.application
 
 import android.os.Bundle
 import android.text.InputType
@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.antonkesy.customercounter.R
+import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -29,11 +31,13 @@ class SettingsActivity : AppCompatActivity() {
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         //set number edit pref to only number dial
-        setNumberInputPref(preferenceManager.findPreference("prefCustomerKey")!!)
-        setNumberInputPref(preferenceManager.findPreference("prefMaxKey")!!)
+        val userPreferencesManager = UserPreferencesManager(context);
+        setNumberInputPref(preferenceManager.findPreference(userPreferencesManager.getCustomerKey())!!)
+        setNumberInputPref(preferenceManager.findPreference(userPreferencesManager.getMaxCustomerKey())!!)
     }
 
     override fun onCreateView(
@@ -44,12 +48,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val myView = super.onCreateView(inflater, container, savedInstanceState)
 
-        updateBackgroundColor(
-            myView,
-            UserPreferencesManager.isDarkMode(requireContext())
-        )
+        val userPreferencesManager = UserPreferencesManager(context)
+        updateBackgroundColor(myView, userPreferencesManager.isDarkMode())
 
-        val darkModeSwitch: SwitchPreferenceCompat? = findPreference("prefDarkModeKey")
+        val darkModeSwitch: SwitchPreferenceCompat? =
+            findPreference(userPreferencesManager.getDarkModeKey())
         darkModeSwitch?.setOnPreferenceChangeListener { _, newValue ->
             updateBackgroundColor(myView, newValue as Boolean)
             true
