@@ -1,9 +1,7 @@
 package com.antonkesy.customercounter.application
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.HapticFeedbackConstants
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.GONE
@@ -21,6 +19,8 @@ import com.antonkesy.customercounter.application.audio.CustomerCounterAudioManag
 import com.antonkesy.customercounter.application.audio.ICustomerCounterAudioManager
 import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
+import com.antonkesy.customercounter.application.vibration.IVibrationManager
+import com.antonkesy.customercounter.application.vibration.VibrationManager
 import com.antonkesy.customercounter.application.view.ValueChangeButton
 import com.antonkesy.customercounter.application.view.responsive.FullVisibilityToggle
 import com.antonkesy.customercounter.application.view.responsive.IColorChanger
@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settings: ICustomerCounterSettings
     private lateinit var counter: ICounter
     private lateinit var audioManager: ICustomerCounterAudioManager
+    private lateinit var vibrationManager: IVibrationManager
 
     private lateinit var amountTV: TextView
 
@@ -45,13 +46,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var colorItems: List<IColorChanger>
 
     //for volume button control
-    private var view: View? = null
+//    private var view: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        view = findViewById<View>(android.R.id.content).rootView
         settings = UserPreferencesManager(this)
+        vibrationManager = VibrationManager(
+            findViewById<View>(android.R.id.content).rootView,
+            settings.isVibrationActive()
+        )
         audioManager = CustomerCounterAudioManager(this, settings.isSoundActive())
         counter =
             Counter(settings.getCustomerAmount(), settings.getMaxCustomer(), this::updateCounterUI)
@@ -84,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupSubButton() {
         ValueChangeButton(findViewById(R.id.subBtn)) {
             audioManager.playClickSound()
-            vibrateClick()
+            vibrationManager.vibrate()
             counter.decrement()
         }
     }
@@ -92,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupAddButton() {
         ValueChangeButton(findViewById(R.id.addBtn)) {
             audioManager.playClickSound()
-            vibrateClick()
+            vibrationManager.vibrate()
             counter.increment()
         }
     }
@@ -107,7 +111,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         updateUIColor()
         updateCounterUI()
+
         audioManager.setActive(settings.isSoundActive())
+        vibrationManager.setActive(settings.isVibrationActive())
+
         counter.setMax(settings.getMaxCustomer())
         super.onResume()
     }
@@ -156,24 +163,14 @@ class MainActivity : AppCompatActivity() {
         imgBtn.setImageDrawable(ContextCompat.getDrawable(this, drawable))
     }
 
-    private fun vibrateClick() {
-        if (settings.isVibrationActive()) {
-            view?.performHapticFeedback(
-                HapticFeedbackConstants.VIRTUAL_KEY,
-                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-            )
-        }
-    }
-
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (settings.isVolumeControlButton()) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                vibrateClick()
+                vibrationManager.vibrate()
                 audioManager.playClickSound()
                 counter.decrement()
             } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                vibrateClick()
+                vibrationManager.vibrate()
                 audioManager.playClickSound()
                 counter.increment()
             }
