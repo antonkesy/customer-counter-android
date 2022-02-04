@@ -25,7 +25,6 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener,
         billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.e("INAPP", "Setup Billing Done")
                     queryAvailableProducts()
                 }
             }
@@ -42,7 +41,6 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener,
 
         billingClient?.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
             // Process the result.
-            Log.e("INAPP", "billing client start")
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
                 for (skuDetails in skuDetailsList) {
                     this.skuDetails = skuDetails
