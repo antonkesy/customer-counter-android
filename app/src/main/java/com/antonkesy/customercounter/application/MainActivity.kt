@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.antonkesy.customercounter.R
 import com.antonkesy.customercounter.application.audio.CustomerCounterAudioManager
 import com.antonkesy.customercounter.application.audio.ICustomerCounterAudioManager
+import com.antonkesy.customercounter.application.review.InAppReviewManager
 import com.antonkesy.customercounter.application.settings.ICustomerCounterSettings
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 import com.antonkesy.customercounter.application.vibration.IVibrationManager
@@ -52,6 +53,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         settings = UserPreferencesManager(this)
+        val inAppReviewManager = InAppReviewManager(this)
+
+        checkInAppReview(inAppReviewManager)
+
         vibrationManager = VibrationManager(
             findViewById<View>(android.R.id.content).rootView,
             settings.isVibrationActive()
@@ -67,6 +72,12 @@ class MainActivity : AppCompatActivity() {
         setupSubButton()
 
         setViewElements()
+    }
+
+    private fun checkInAppReview(inAppReviewManager: InAppReviewManager) {
+        settings.incrementTimesOpen()
+        if (settings.getTimesOpen() > 20)
+            inAppReviewManager.requestReview()
     }
 
     private fun setViewElements() {
