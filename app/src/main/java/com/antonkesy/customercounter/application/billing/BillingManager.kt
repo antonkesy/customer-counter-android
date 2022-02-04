@@ -25,7 +25,7 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener,
         billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.v("TAG_INAPP", "Setup Billing Done")
+                    Log.e("INAPP", "Setup Billing Done")
                     queryAvailableProducts()
                 }
             }
@@ -42,9 +42,10 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener,
 
         billingClient?.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
             // Process the result.
+            Log.e("INAPP", "billing client start")
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
                 for (skuDetails in skuDetailsList) {
-                    Log.v("TAG_INAPP", "skuDetailsList : $skuDetailsList")
+                    this.skuDetails = skuDetails
                 }
             }
         }
@@ -58,6 +59,7 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener,
             billingClient?.launchBillingFlow(activity, billingFlowParams)?.responseCode
         }
     }
+
 
     override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
         //nothing
