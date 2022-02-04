@@ -61,11 +61,32 @@ class BillingManager(private val activity: Activity) : PurchasesUpdatedListener,
     }
 
 
-    override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
-        //nothing
+    override fun onPurchasesUpdated(
+        billingResult: BillingResult,
+        purchases: MutableList<Purchase>?
+    ) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            for (purchase in purchases) {
+                handleConsumedPurchases(purchase)
+            }
+        }
     }
 
     override fun startDonatePurchasePrompt() {
         donate()
+    }
+
+    private fun handleConsumedPurchases(purchase: Purchase) {
+        val params =
+            ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
+        billingClient?.consumeAsync(params) { billingResult, _ ->
+            when (billingResult.responseCode) {
+                BillingClient.BillingResponseCode.OK -> {
+                    //purchase successfully consumed
+                }
+                else -> {
+                }
+            }
+        }
     }
 }
