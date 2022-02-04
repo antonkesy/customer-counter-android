@@ -14,6 +14,7 @@ public class UserPreferencesManager implements ICustomerCounterSettings {
     private static final String PREF_SOUND_KEY = "prefSoundKey";
     private static final String PREF_VOLUME_CONTROL_ON_KEY = "prefVolumeControlOnKey";
     private static final String PREF_DARK_MODE_KEY = "prefDarkModeKey";
+    private static final String PREF_TIME_OPEN = "prefTimesOpen";
 
     private final Context context;
 
@@ -118,5 +119,15 @@ public class UserPreferencesManager implements ICustomerCounterSettings {
     @Override
     public String getMaxCustomerKey() {
         return PREF_MAX_KEY;
+    }
+
+    @Override
+    public void incrementTimesOpen() {
+        getEditorSharedPreferences(context).putInt(PREF_TIME_OPEN, getTimesOpen() + 1).apply();
+    }
+
+    @Override
+    public int getTimesOpen() {
+        return getSharedPreferences(context).getInt(PREF_TIME_OPEN, 0);
     }
 }

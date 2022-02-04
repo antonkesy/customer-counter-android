@@ -11,4 +11,6 @@ interface IApplicationSettings {
     fun putDarkMode(isDarkMode: Boolean)
 
     fun getDarkModeKey(): String
+    fun incrementTimesOpen()
+    fun getTimesOpen(): Int
 }
