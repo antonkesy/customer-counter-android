@@ -12,6 +12,7 @@ import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.antonkesy.customercounter.R
+import com.antonkesy.customercounter.application.billing.BillingManager
 import com.antonkesy.customercounter.application.billing.IDonateManager
 import com.antonkesy.customercounter.application.settings.UserPreferencesManager
 
@@ -24,6 +25,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
+        donateManager = BillingManager(this)
         findViewById<Button>(R.id.donateBtn).setOnClickListener { donateManager?.startDonatePurchasePrompt() }
 
         if (savedInstanceState == null) {
